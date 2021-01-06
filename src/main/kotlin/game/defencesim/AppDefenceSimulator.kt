@@ -1,5 +1,9 @@
 package game.defencesim
 
+import game.defencesim.render.Renderer
+import game.defencesim.util.IntPos
+import game.defencesim.util.Position
+import game.defencesim.weapon.WeaponShip
 import javafx.application.Application
 import javafx.scene.Scene
 import javafx.scene.canvas.Canvas
@@ -39,9 +43,24 @@ class AppDefenceSimulator : Application() {
 
         primaryStage.scene = Scene(pane, 1280.0, 960.0)
 
+        primaryStage.scene.setOnKeyPressed {
+            DeviceManager.pressed(it.code)
+        }
+
+        primaryStage.scene.setOnKeyReleased {
+            DeviceManager.released(it.code)
+        }
+
+        primaryStage.scene.setOnMouseClicked {
+            DeviceManager.clickedAt(it.button, Position(it.sceneX / primaryStage.scene.width, it.sceneY / primaryStage.scene.height))
+        }
+
         primaryStage.show()
 
-        val sceneMain = GameSceneMain()
+        val w = 100
+        val h = 100
+
+        val sceneMain = GameSceneMain(MapData(IntArray(w*h) { 1 }, setOf(WeaponShip(IntPos(2, 2), GameSceneMain.PlayerType.JAPAN)), w, h))
 
         sceneMain.start()
 
